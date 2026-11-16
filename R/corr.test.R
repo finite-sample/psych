@@ -16,7 +16,13 @@ t <- (r*sqrt(n-2))/sqrt(1-r^2)
 #p <- 2*(1 - pt(abs(t),(n-2)))
 p <- -2 *  expm1(pt(abs(t),(n-2),log.p=TRUE))  #suggested by Nicholas Clark 
 se <- sqrt((1-r*r)/(n-2))
-} else {temp <- prob.Kendall(x=x,y=y,method=method)
+} else {
+ if(use %in% c("complete", "complete.obs", "na.or.complete")) {  #prob.Kendall works pair by pair, so select the complete cases here
+   cc <- complete.cases(x, y)
+   if(is.null(dim(x))) {x <- x[cc]} else {x <- x[cc, , drop=FALSE]}
+   if(!is.null(y)) {if(is.null(dim(y))) {y <- y[cc]} else {y <- y[cc, , drop=FALSE]}}
+   }
+ temp <- prob.Kendall(x=x,y=y,method=method)
 if(is.null(y)) { sym <- TRUE
     n <- t(!is.na(x)) %*% (!is.na(x))} else {sym <- FALSE
     n <- t(!is.na(x)) %*% (!is.na(y))}
