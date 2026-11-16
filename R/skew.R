@@ -61,7 +61,7 @@ function (x, na.rm = TRUE,type=3)
     for (i in 1:dim(x)[2]) {
     n <- length(x[!is.na(x[,i]),i])
     switch(type,
-      { kurt[i] <- sum((x[,i] - mx[i])^4,  na.rm = na.rm)*length(x[,i]) /(sum((x[,i] - mx[i])^2,na.rm = na.rm)^2)  -3},  #type 1
+      { kurt[i] <- sum((x[,i] - mx[i])^4,  na.rm = na.rm)*n /(sum((x[,i] - mx[i])^2,na.rm = na.rm)^2)  -3},  #type 1
      {
      xi <- x[,i]-mx[i]
      kurt[i] <- n*(n + 1)*sum((x[,i] - mx[i])^4,  na.rm = na.rm)/( (n - 1)*(n - 2)*(n - 3)*(sum((x[,i] - mx[i])^2,na.rm = na.rm)/(n - 1))^2)  -3 *(n- 1)^2 /((n - 2)*(n - 3)) }  #type 2
