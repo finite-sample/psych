@@ -190,10 +190,7 @@ if(any( !(select %in% colnames(items)) )) {
    #now find the Guttman 6 * reliability estimate as well as the corrected item-whole correlations
    
    if(raw.data) {
-   if(length(bad) >0 ) {items <- items[,-bad]
-    # item.var <-  item.var[-bad]
-    # C <- C[-bad,-bad]
-   } #this removes those items with no variance from the item statistics
+   #items with no variance were already dropped from items and keys above (when delete=TRUE); dropping by the same index again removed a different item
     item.cor <- cor(items,scores)
     } else {if (n.keys >1) {
          item.cor <- C %*% keys %*% diag(1/sqrt(var.scales))/sqrt(item.var)} else {item.cor <- C %*% keys /sqrt(var.scales * item.var)}}
