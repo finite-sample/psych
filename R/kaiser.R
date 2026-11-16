@@ -5,6 +5,7 @@ if(!requireNamespace('GPArotation')) stop('GPArotation is required for the Kaise
 h2 <- diag(f %*% t(f))
 weighted <- f/sqrt(h2)
 #rotated <- call(paste('GPArotation',rotate,sep="::"),list(weighted))
+if(missing(pro.m)) pro.m <- m   #m is the documented Promax power; pro.m, if given, replaces it
 if(rotate == "Promax") {rotated <- Promax(weighted,m=pro.m)} else {
 rotated <- do.call(getFromNamespace(rotate,'GPArotation'),list(weighted))}
 normalized <- rotated$loadings * sqrt(h2)
