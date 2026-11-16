@@ -11,7 +11,9 @@ n <- t(!is.na(x)) %*% (!is.na(x))
 } else {r <- cor(x,y,use=use,method=method)
   sym=FALSE
 n <- t(!is.na(x)) %*% (!is.na(y))}
-if((use=="complete") | (min(n) == max(n))) n <- min(n)
+#with complete-case deletion every r uses the same cases, so n is that count, not the smallest pairwise count
+if(use %in% c("complete", "complete.obs", "na.or.complete")) n <- sum(complete.cases(x, y))
+if(min(n) == max(n)) n <- min(n)
 t <- (r*sqrt(n-2))/sqrt(1-r^2)
 #p <- 2*(1 - pt(abs(t),(n-2)))
 p <- -2 *  expm1(pt(abs(t),(n-2),log.p=TRUE))  #suggested by Nicholas Clark 
