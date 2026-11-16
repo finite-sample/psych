@@ -112,6 +112,14 @@ polyF <- function(rho,rc,cc,tab) {  #doesn't blow up in the case of 0 cell entri
        -sum(tab * lP,na.rm=TRUE)  }  #the  criterion to be minimized
        
        
+#the weighted analogue of tabulate(x, nbins): the sum of the weights of the cases in each category
+"wtd.tabulate" <- function(x,weight,nbins) {
+ok <- !is.na(x) & !is.na(weight)
+freq <- numeric(nbins)
+s <- tapply(weight[ok],factor(x[ok],levels=1:nbins),sum)
+freq[!is.na(s)] <- s[!is.na(s)]
+freq}
+
 "wtd.table" <- function(x,y,weight) {
 tab <- tapply(weight,list(x,y),sum,na.rm=TRUE,simplify=TRUE) #taken from questionr:wtd.table
 tab[is.na(tab)] <- 0
@@ -294,7 +302,8 @@ if (min(xmax) != max(xmax)) {global <- FALSE
  xmax <- max(xmax)  #don't test for globality xmax
  gmaxx <- gmaxy <- xmax #check for different maxima
 
-xfreq <- apply(x,2,tabulate,nbins=nvalues)
+#with weights, the global thresholds must come from the weighted marginals, as the weighted tables do
+if(is.null(weight)) {xfreq <- apply(x,2,tabulate,nbins=nvalues)} else {xfreq <- apply(x,2,wtd.tabulate,weight=weight,nbins=nvalues)}
 n.obs <- colSums(xfreq)
 xfreq <- t(t(xfreq)/n.obs)
 #the next 3 lines get around a problem with precision of cumsum
@@ -334,7 +343,7 @@ mat <- matpLower(x,nvar,gminx,gmaxx,gminy,gmaxy)  #the local copy has the extra 
    gminy <- 1
    gmaxy <- ymax 
    nvaluesy <- ymax - ymin +1
-   yfreq <- apply(y,2,tabulate,nbins=nvaluesy)
+   if(is.null(weight)) {yfreq <- apply(y,2,tabulate,nbins=nvaluesy)} else {yfreq <- apply(y,2,wtd.tabulate,weight=weight,nbins=nvaluesy)}
  	n.obs.y <- colSums(yfreq)
 	yfreq <- t(t(yfreq)/n.obs.y)
 	
