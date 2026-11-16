@@ -86,7 +86,8 @@ if(is.factor(x1) ) {  #this gets around a problem of tabling numbers as characte
   x1 <- x[,1]
   x2 <- x[,2]}
   if(!is.null(levels)) {labels <- levels} else {
-labels <- levels(as.factor(cbind(x1,x2)))}
+   if(is.factor(x[,1]) && is.factor(x[,2])) {labels <- union(levels(x[,1]),levels(x[,2]))  #keep the order of the factor levels, which the weights depend upon
+   } else {labels <- levels(as.factor(cbind(x1,x2)))}}
  len <- length(labels)
  x <- matrix(0,ncol=len,nrow=len)
  colnames(x) <- rownames(x) <- labels
